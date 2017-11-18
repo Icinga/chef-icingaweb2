@@ -7,7 +7,7 @@ default['icingaweb2']['web_engine'] = 'apache'
 default['icingaweb2']['source_url'] = 'https://github.com/Icinga/icingaweb2.git'
 default['icingaweb2']['version']['icingaweb2'] = '2.4.2-1'
 default['icingaweb2']['version']['icingacli'] = '2.4.2-1'
-default['icingaweb2']['version']['icinga2-ido'] = '2.7.2-1'
+default['icingaweb2']['version']['icinga2-ido'] = '2.8.0-1'
 default['icingaweb2']['web_root'] = '/usr/share/icingaweb2'
 default['icingaweb2']['web_uri'] = '/icingaweb2'
 default['icingaweb2']['conf_dir'] = '/etc/icingaweb2'
@@ -54,7 +54,7 @@ when 'centos', 'redhat', 'fedora', 'amazon'
     'amazon' => { 'default' => '.el6.icinga' }
   )
 when 'ubuntu', 'debian', 'raspbian'
-  default['icingaweb2']['version_suffix'] = '~' + node['lsb']['codename'].to_s
+  default['icingaweb2']['version_suffix'] = '.' + node['lsb']['codename'].to_s
 end
 
 # ido
