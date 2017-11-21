@@ -2,6 +2,7 @@
 <%
   db_host = ENV['KITCHEN_DB_HOST'] || '127.0.0.1'
   db_port = ENV['KITCHEN_DB_PORT'] || '3306'
+  db_setup_auto = ENV['KITCHEN_DB_SETUP_AUTO'] || 'true'
 %>
 driver:
   name: dokken
@@ -16,9 +17,16 @@ verifier:
 provisioner:
   name: dokken
   attributes:
+    icinga2:
+      ignore_version: true
     icingaweb2:
+      ignore_version: true
       ido:
+        <% if db_setup_auto == 'true' %>
         install_mysql_client: false
+        <% else %>
+        install_mysql_client: true
+        <% end %>
         db_host: <%= db_host %>
         db_port: <%= db_port %>
         db_password: X2BM0WKnN
@@ -100,13 +108,12 @@ suites:
       inspec_tests:
         - test/smoke/default/package.rb
     run_list:
+      <% if db_setup_auto == 'true' %>
       - recipe[icinga2-test-mysql-instance::default]
-      - recipe[icinga2::core_install]
-      - recipe[icinga2::server_config]
-      - recipe[icinga2::server_objects]
+      <% end %>
+      - recipe[icinga2::default]
       - recipe[icingaweb2::default]
       - recipe[icingaweb2_test::default]
-      - recipe[icinga2::service]
     attributes:
       icingaweb2:
         install_method: package
@@ -118,13 +125,12 @@ suites:
       inspec_tests:
         - test/smoke/default/package.rb
     run_list:
+      <% if db_setup_auto == 'true' %>
       - recipe[icinga2-test-mysql-instance::default]
-      - recipe[icinga2::core_install]
-      - recipe[icinga2::server_config]
-      - recipe[icinga2::server_objects]
+      <% end %>
+      - recipe[icinga2::default]
       - recipe[icingaweb2::default]
       - recipe[icingaweb2_test::default]
-      - recipe[icinga2::service]
     attributes:
       icingaweb2:
         install_method: package
@@ -136,13 +142,12 @@ suites:
       inspec_tests:
         - test/smoke/default/source.rb
     run_list:
+      <% if db_setup_auto == 'true' %>
       - recipe[icinga2-test-mysql-instance::default]
-      - recipe[icinga2::core_install]
-      - recipe[icinga2::server_config]
-      - recipe[icinga2::server_objects]
+      <% end %>
+      - recipe[icinga2::default]
       - recipe[icingaweb2::default]
       - recipe[icingaweb2_test::default]
-      - recipe[icinga2::service]
     attributes:
       icingaweb2:
         install_method: source
@@ -154,13 +159,12 @@ suites:
       inspec_tests:
         - test/smoke/default/source.rb
     run_list:
+      <% if db_setup_auto == 'true' %>
       - recipe[icinga2-test-mysql-instance::default]
-      - recipe[icinga2::core_install]
-      - recipe[icinga2::server_config]
-      - recipe[icinga2::server_objects]
+      <% end %>
+      - recipe[icinga2::default]
       - recipe[icingaweb2::default]
       - recipe[icingaweb2_test::default]
-      - recipe[icinga2::service]
     attributes:
       icingaweb2:
         install_method: source

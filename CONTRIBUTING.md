@@ -1,5 +1,5 @@
 # Contributing
-A roadmap of this project is located at https://github.com/Icinga/chef-icinga2repo/milestones. Please consider
+A roadmap of this project is located at https://github.com/Icinga/chef-icingaweb2/milestones. Please consider
 this roadmap when you start contributing to the project.
 
 Before starting your work on this module, you should [fork the project] to your GitHub account. This allows you to

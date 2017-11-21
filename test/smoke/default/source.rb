@@ -30,11 +30,6 @@ if %w[redhat fedora amazon].include?(os[:family])
     it { should exist }
   end
 else
-
-  describe package('icinga-cgi-bin') do
-    it { should be_installed }
-  end
-
   describe package('libicinga2') do
     it { should be_installed }
   end

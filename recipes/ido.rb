@@ -28,7 +28,7 @@ if node['icingaweb2']['ido']['install_mysql_client']
       uri node['icingaweb2']['ido']['apt']['uri']
       distribution node['icingaweb2']['ido']['apt']['distribution']
       components node['icingaweb2']['ido']['apt']['components']
-      keyserver node['icingaweb2']['ido']['apt']['keyserver'] unless node['icingaweb2']['apt']['keyserver'].nil?
+      keyserver node['icingaweb2']['ido']['apt']['keyserver'] unless node['icingaweb2']['ido']['apt']['keyserver'].nil?
       key node['icingaweb2']['ido']['apt']['key']
       deb_src node['icingaweb2']['ido']['apt']['deb_src']
       action node['icingaweb2']['ido']['apt']['action']

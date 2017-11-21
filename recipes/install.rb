@@ -26,7 +26,7 @@ end
 directory node['icingaweb2']['log_dir'] do
   owner node[node['icingaweb2']['web_engine']]['user']
   group node[node['icingaweb2']['web_engine']]['group']
-  mode '0775'
+  mode '02775'
 end
 
 # setup token
@@ -43,7 +43,7 @@ file ::File.join(node['icingaweb2']['conf_dir'], 'setup.token') do
 end
 
 # set php time zone
-php_ini = if node['platform_family'] =~ /rhel|amazon/
+php_ini = if %w[rhel amazon fedora].include?(node['platform_family'])
             '/etc/php.ini'
           elsif node['platform_family'] == 'debian'
             if node['lsb']['codename'] == 'xenial'
@@ -86,14 +86,13 @@ if node['icingaweb2']['install_method'] == 'source'
 else
   package 'icingaweb2' do
     # skip ubuntu version for now
-    version web2_package_version unless node['icingaweb2']['ignore_version'] || node['platform_family'] != 'rhel'
+    version web2_package_version unless node['icingaweb2']['ignore_version']
     notifies :restart, 'service[icinga2]', :delayed
   end
 
   package 'icingacli' do
     version cli_package_version unless node['icingaweb2']['ignore_version']
     notifies :restart, 'service[icinga2]', :delayed
-    only_if { node['platform_family'] == 'rhel' }
   end
 end
 

@@ -17,18 +17,9 @@ case node['platform_family']
 when 'fedora', 'rhel', 'amazon'
   default['icingaweb2']['user'] = 'icinga'
   default['icingaweb2']['group'] = 'icinga'
-  default['icingaweb2']['cmdgroup'] = 'icingacmd'
-  default['icingaweb2']['plugins_dir'] = if node['kernel']['machine'] == 'x86_64'
-                                           '/usr/lib64/nagios/plugins'
-                                         else
-                                           '/usr/lib/nagios/plugins'
-                                         end
-
 when 'debian'
   default['icingaweb2']['user'] = 'nagios'
   default['icingaweb2']['group'] = 'nagios'
-  default['icingaweb2']['cmdgroup'] = 'nagios'
-  default['icingaweb2']['plugins_dir'] = '/usr/lib/nagios/plugins'
 end
 
 # apache
@@ -41,7 +32,6 @@ default['icingaweb2']['apache_modules'] = value_for_platform(
   %w[fedora amazon] => { 'default' => %w[default mod_python mod_php mod_cgi mod_ssl mod_rewrite] }
 )
 
-default['icingaweb2']['apache_classic_ui_template'] = "apache.vhost.icinga2_classic_ui.conf.#{node['platform_family']}.erb"
 default['icingaweb2']['apache_web2_template'] = 'apache.vhost.icinga2_web2.erb'
 default['icingaweb2']['apache_conf_cookbook'] = 'icingaweb2'
 

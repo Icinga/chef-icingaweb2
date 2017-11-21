@@ -13,9 +13,9 @@ source_url 'https://github.com/Icinga/chef-icingaweb2' if respond_to?(:source_ur
 depends 'apache2', '~> 5.0.1'
 depends 'yum-epel', '>= 2.1.1'
 depends 'apt', '>= 5.0.1'
-depends 'icinga2repo'
-depends 'icinga2'
+depends 'icinga2repo', '>= 1.0.0'
+depends 'icinga2', '>= 4.0.0'
 
-%w[raspbian redhat centos amazon ubuntu debian].each do |os|
+%w[redhat centos amazon ubuntu].each do |os|
   supports os
 end
