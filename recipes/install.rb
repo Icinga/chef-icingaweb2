@@ -17,31 +17,6 @@ else
   Chef::Log.warn("missing attribute node['time']['timezone'], using default value 'UTC'")
 end
 
-directory node['icingaweb2']['conf_dir'] do
-  owner node[node['icingaweb2']['web_engine']]['user']
-  group node[node['icingaweb2']['web_engine']]['group']
-  mode '02770'
-end
-
-directory node['icingaweb2']['log_dir'] do
-  owner node[node['icingaweb2']['web_engine']]['user']
-  group node[node['icingaweb2']['web_engine']]['group']
-  mode '02775'
-end
-
-# setup token
-unless node['icingaweb2'].key?('setup_token')
-  require 'securerandom'
-  node.normal['icingaweb2']['setup_token'] = SecureRandom.base64(12)
-end
-
-file ::File.join(node['icingaweb2']['conf_dir'], 'setup.token') do
-  content node['icingaweb2']['setup_token']
-  owner node[node['icingaweb2']['web_engine']]['user']
-  group node[node['icingaweb2']['web_engine']]['group']
-  mode 0o660
-end
-
 # set php time zone
 php_ini = if %w[rhel amazon fedora].include?(node['platform_family'])
             '/etc/php.ini'
@@ -97,3 +72,34 @@ else
 end
 
 icinga2_feature 'command'
+
+directory node['icingaweb2']['conf_dir'] do
+  owner node[node['icingaweb2']['web_engine']]['user']
+  group node[node['icingaweb2']['web_engine']]['group']
+  mode '02770'
+end
+
+directory ::File.join(node['icingaweb2']['conf_dir'], 'modules', 'monitoring') do
+  owner node[node['icingaweb2']['web_engine']]['user']
+  group node[node['icingaweb2']['web_engine']]['group']
+  mode '02770'
+end
+
+directory node['icingaweb2']['log_dir'] do
+  owner node[node['icingaweb2']['web_engine']]['user']
+  group node[node['icingaweb2']['web_engine']]['group']
+  mode '02775'
+end
+
+# setup token
+unless node['icingaweb2'].key?('setup_token')
+  require 'securerandom'
+  node.normal['icingaweb2']['setup_token'] = SecureRandom.base64(12)
+end
+
+file ::File.join(node['icingaweb2']['conf_dir'], 'setup.token') do
+  content node['icingaweb2']['setup_token']
+  owner node[node['icingaweb2']['web_engine']]['user']
+  group node[node['icingaweb2']['web_engine']]['group']
+  mode 0o660
+end

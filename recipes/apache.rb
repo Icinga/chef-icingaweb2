@@ -7,11 +7,6 @@
 
 node.default['apache']['servertokens'] = 'Minimal'
 node.default['apache']['mpm'] = 'prefork'
-if node['platform'] == 'amazon'
-  node.default['apache']['mod_ssl']['pkg_name'] = 'mod_ssl'
-  node.default['apache']['package'] = 'httpd'
-  node.default['apache']['devel_package'] = 'httpd-devel'
-end
 
 node['icingaweb2']['apache_modules'].each { |mod| include_recipe "apache2::#{mod}" }
 

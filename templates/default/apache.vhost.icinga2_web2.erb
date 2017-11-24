@@ -44,3 +44,7 @@ Alias <%= @web_uri -%> "<%= @web_root -%>/public"
         ErrorDocument 404 /error_norewrite.html
     </IfModule>
 </Directory>
+
+<FilesMatch \.php$>
+  SetHandler application/x-httpd-php
+</FilesMatch>

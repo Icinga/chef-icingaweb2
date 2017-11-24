@@ -64,6 +64,34 @@ https://github.com/Icinga/icingaweb2
 - `icingaweb2::default` - run_list recipe
 
 
+## MySQL Database
+
+When using MySQL Database, a database and database user must be created with proper privileges for `icinga2` and `icingaweb2`.
+
+```shell
+e.g. icinga2 ido database
+database name : icinga
+database user: icinga
+databasepassword: icinga
+
+mysql> CREATE DATABASE icinga;
+mysql> GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE VIEW, INDEX, EXECUTE ON icinga.* TO 'icinga'@'localhost' IDENTIFIED BY 'icinga';
+mysql> FLUSH PRIVILEGES;
+```
+
+```shell
+e.g. icingaweb2 database
+database name : icingaweb2
+database user: icingaweb2
+databasepassword: icnigaweb2
+
+mysql> CREATE DATABASE icingaweb2;
+mysql> GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE VIEW, INDEX, EXECUTE ON icingaweb2.* TO 'icingaweb2'@'localhost' IDENTIFIED BY 'icingaweb2';
+mysql> FLUSH PRIVILEGES;
+
+```
+
+
 ## Cookbook Attributes
 
  * `default['icingaweb2']['setup_epel']` (default: `true`): if set includes recipe `yum-epel`

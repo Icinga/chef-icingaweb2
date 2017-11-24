@@ -3,10 +3,12 @@
   db_host = ENV['KITCHEN_DB_HOST'] || '127.0.0.1'
   db_port = ENV['KITCHEN_DB_PORT'] || '3306'
   db_setup_auto = ENV['KITCHEN_DB_SETUP_AUTO'] || 'true'
+  expose_port = ENV['KITCHEN_EXPOSE_PORT'] || 'false'
 %>
 driver:
   name: dokken
-  privileged: true
+  privileged: false
+  # privileged: true
 
 transport:
   name: dokken
@@ -21,16 +23,30 @@ provisioner:
       ignore_version: true
     icingaweb2:
       ignore_version: true
-      ido:
-        <% if db_setup_auto == 'true' %>
-        install_mysql_client: false
-        <% else %>
-        install_mysql_client: true
-        <% end %>
+      <% if db_setup_auto == 'true' %>
+      install_mysql_client: false
+      <% else %>
+      install_mysql_client: true
+      <% end %>
+      ido_db:
         db_host: <%= db_host %>
         db_port: <%= db_port %>
         db_password: X2BM0WKnN
         load_schema: true
+      web2_db:
+        db_host: <%= db_host %>
+        db_port: <%= db_port %>
+        db_password: X2BM0WKnN
+        load_schema: true
+      ini_config:
+        resources:
+          icingaweb2:
+            host: <%= db_host %>
+            password: X2BM0WKnN
+          icinga2:
+            host: <%= db_host %>
+            password: X2BM0WKnN
+
     apt:
       confd:
         install_recommends: false
@@ -104,6 +120,9 @@ suites:
   - name: chef12package
     driver:
       chef_version: 12.21.4
+      <% if expose_port == 'true' %>
+      ports: '80'
+      <% end %>
     verifier:
       inspec_tests:
         - test/smoke/default/package.rb
@@ -121,6 +140,9 @@ suites:
   - name: chef13package
     driver:
       chef_version: 13.3.42
+      <% if expose_port == 'true' %>
+      ports: '80'
+      <% end %>
     verifier:
       inspec_tests:
         - test/smoke/default/package.rb
@@ -138,6 +160,9 @@ suites:
   - name: chef12source
     driver:
       chef_version: 12.21.4
+      <% if expose_port == 'true' %>
+      ports: '80'
+      <% end %>
     verifier:
       inspec_tests:
         - test/smoke/default/source.rb
@@ -155,6 +180,9 @@ suites:
   - name: chef13source
     driver:
       chef_version: 13.3.42
+      <% if expose_port == 'true' %>
+      ports: '80'
+      <% end %>
     verifier:
       inspec_tests:
         - test/smoke/default/source.rb

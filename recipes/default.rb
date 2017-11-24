@@ -5,6 +5,7 @@
 # Copyright:: 2017, The Authors, All Rights Reserved.
 #
 
+include_recipe 'icingaweb2::attributes'
 include_recipe 'icinga2repo::default'
 
 if %w[redhat centos].include?(node['platform']) && node['icingaweb2']['setup_epel']
@@ -26,7 +27,7 @@ else
 end
 
 include_recipe 'icingaweb2::install'
-
+include_recipe 'icingaweb2::config'
 include_recipe 'icingaweb2::ido'
 
 # temp
