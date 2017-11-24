@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
 default['icingaweb2']['setup_epel'] = true
+default['icingaweb2']['setup_config'] = false
 default['icingaweb2']['ignore_version'] = false
 default['icingaweb2']['install_method'] = 'package' # options: package, source
+default['icingaweb2']['modules'] = %w[doc monitoring translation]
 default['icingaweb2']['web_engine'] = 'apache'
 default['icingaweb2']['source_url'] = 'https://github.com/Icinga/icingaweb2.git'
 default['icingaweb2']['version']['icingaweb2'] = '2.4.2-1'

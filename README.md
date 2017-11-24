@@ -11,6 +11,13 @@ This is a [Chef] cookbook to manage [Icingaweb2].
 >> For Production environment, always prefer the [most recent release](https://supermarket.chef.io/cookbooks/icingaweb2).
 
 
+## Icingaweb2 Setup
+
+Currently, `icingaweb2` can only be configured by accessing `/icingaweb2/setup`.
+
+Automated configuration is not fully tested. Check out Github open [Issues] for more information.
+
+
 ## Most Recent Release
 
 ```ruby
@@ -28,7 +35,7 @@ cookbook 'icingaweb2', github: 'Icinga/chef-icingaweb2',  tag: 'v1.0.0'
 ## Repository
 
 ```
-https://github.com/Icinga/icingaweb2
+https://github.com/Icinga/chef-icingaweb2
 ```
 
 
@@ -53,20 +60,28 @@ https://github.com/Icinga/icingaweb2
 
 ## Recipes
 
+- `icingaweb2::attributes` - icingaweb2 evaluated attributes
+
 - `icingaweb2::install` - install icingaweb2 packages
 
-- `icingaweb2::ido` - configure icinga2 mysql ido
+- `icingaweb2::config` - icingaweb2 configuration files
 
-- `icingaweb2::packages` - install icingaweb2 dependencies
+- `icingaweb2::ido` - configure icinga2 ido packages and load db schema
+
+- `icingaweb2::packages` - install icingaweb2 package dependencies
 
 - `icingaweb2::apache` - configure apache web server
 
 - `icingaweb2::default` - run_list recipe
 
 
-## MySQL Database
+## Prepare Database
 
-When using MySQL Database, a database and database user must be created with proper privileges for `icinga2` and `icingaweb2`.
+This cookbook requires a running database server. Database setup is not part of this cookbook and must be setup separately.
+
+### MySQL
+
+When using MySQL Database, a database and database user must be created with proper privileges for `icinga2 ido` and `icingaweb2`.
 
 ```shell
 e.g. icinga2 ido database
@@ -75,7 +90,7 @@ database user: icinga
 databasepassword: icinga
 
 mysql> CREATE DATABASE icinga;
-mysql> GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE VIEW, INDEX, EXECUTE ON icinga.* TO 'icinga'@'localhost' IDENTIFIED BY 'icinga';
+mysql> GRANT ALL PRIVILEGES ON icinga.* TO 'icinga'@'localhost' IDENTIFIED BY 'icinga';
 mysql> FLUSH PRIVILEGES;
 ```
 
@@ -91,10 +106,26 @@ mysql> FLUSH PRIVILEGES;
 
 ```
 
+### PgSQL
+
+TODO
+
+
+## How to Load Database Schema
+
+Set below attributes to `true` to load db schema using cookbook.
+
+- default['icingaweb2']['ido_db']['load_schema']
+- default['icingaweb2']['web2_db']['load_schema']
+
 
 ## Cookbook Attributes
 
  * `default['icingaweb2']['setup_epel']` (default: `true`): if set includes recipe `yum-epel`
+
+ * `default['icingaweb2']['setup_config']` (default: `false`): [Experimental] if set creates ini configuration files and also enable modules
+
+ * `default['icingaweb2']['modules']` (default: `%w[doc monitoring translation]`): enable icingaweb2 modules
 
  * `default['icingaweb2']['install_method']` (default: `package`): icingaweb2 install method, options: package, source
 
@@ -130,55 +161,74 @@ mysql> FLUSH PRIVILEGES;
 
  * `default['icingawe2']['version_suffix']` (default: `calculated`): icingaweb2 package version suffix
 
- * `default['icingaweb2']['ido']['type']` (default: `mysql`): icinga2 ido type, valid are `mysql pgsql`
+ * `default['icingaweb2']['mysql_home']` (default: `/etc/mysql`): sets value for environment variable `MYSQL_HOME` for schema load
 
- * `default['icingaweb2']['ido']['load_schema']` (default: `false`): whether to load db schema
+ * `default['icingaweb2']['mysql_version']` (default: `5.7`): if set true, install mysql client
 
- * `default['icingaweb2']['ido']['install_mysql_client']` (default: `false`): install mysql client using mysql official repository
+ * `default['icingaweb2']['install_mysql_client']` (default: `false`): install mysql client using mysql official repository
 
- * `default['icingaweb2']['ido']['db_host']` (default: `localhost`): icingaweb2 ido db host
+ * `default['icingaweb2']['db_type']` (default: `mysql`): icinga2 database type for ido and web2, options: `mysql pgsql`
 
- * `default['icingaweb2']['ido']['db_port']` (default: `3306`): icingaweb2 ido db port
 
- * `default['icingaweb2']['ido']['db_name']` (default: `icinga`): icingaweb2 ido db name
+## Icinga2 IDO Database Attributes
 
- * `default['icingaweb2']['ido']['db_user']` (default: `icinga`): icingaweb2 ido db user
+ * `default['icingaweb2']['ido_db']['load_schema']` (default: `false`): if set true, loads icinga2 ido db schema (`mysql.sql`)
 
- * `default['icingaweb2']['ido']['db_password']` (default: `icinga`): icingaweb2 ido db password
+ * `default['icingaweb2']['ido_db']['db_host']` (default: `localhost`): icinga2 ido db host
 
- * `default['icingaweb2']['ido']['mysql_home']` (default: `/etc/mysql`): sets value for environment variable `MYSQL_HOME` for schema load
+ * `default['icingaweb2']['ido_db']['db_port']` (default: `3306`): icinga2 ido db port
 
- * `default['icingaweb2']['ido']['mysql_version']` (default: `5.7`): install mysql client if set true
+ * `default['icingaweb2']['ido_db']['db_name']` (default: `icinga`): icinga2 ido db name
 
- * `default['icingaweb2']['ido']['yum']['description']` (default: `MySQL Community #{node['icingaweb2']['ido']['mysql_version']}`): yum repo resource attribute
+ * `default['icingaweb2']['ido_db']['db_user']` (default: `icinga`): icinga2 ido db user
 
- * `default['icingaweb2']['ido']['yum']['gpgcheck']` (default: `true`): yum repo resource attribute
+ * `default['icingaweb2']['ido_db']['db_password']` (default: `icinga`): icinga2 ido db password
 
- * `default['icingaweb2']['ido']['yum']['enabled']` (default: `true`): yum repo resource attribute
 
- * `default['icingaweb2']['ido']['yum']['gpgkey']` (default: `https://raw.githubusercontent.com/Icinga/chef-icinga2/master/files/default/mysql_pubkey.asc`): yum repo resource attribute
+## Icingaweb2 Database Attributes
 
- * `default['icingaweb2']['ido']['yum']['action']` (default: `:create`): yum repo resource attribute
+  * `default['icingaweb2']['web2_db']['load_schema']` (default: `false`): if set true, loads icingaweb2 db schema (`mysql.schema.sql`)
 
- * `default['icingaweb2']['ido']['yum']['baseurl']` (default: `calculated`): yum repo resource attribute
+  * `default['icingaweb2']['web2_db']['db_host']` (default: `localhost`): icingaweb2 db host
 
- * `default['icingaweb2']['ido']['apt']['repo']` (default: `MySQL Community #{node['icingaweb2']['ido']['mysql_version']}`): apt repository resource attribute
+  * `default['icingaweb2']['web2_db']['db_port']` (default: `3306`): icingaweb2 db port
 
- * `default['icingaweb2']['ido']['apt']['keyserver']` (default: `keyserver.ubuntu.com`): apt repository resource attribute
+  * `default['icingaweb2']['web2_db']['db_name']` (default: `icingaweb2`): icingaweb2 db name
 
- * `default['icingaweb2']['ido']['apt']['components']` (default: `["mysql-#{node['icingaweb2']['ido']['mysql_version']}"]`): apt repository resource attribute
+  * `default['icingaweb2']['web2_db']['db_user']` (default: `icingaweb2`): icingaweb2 db user
 
- * `default['icingaweb2']['ido']['apt']['deb_src']` (default: `false`): apt repository resource attribute
+  * `default['icingaweb2']['web2_db']['db_password']` (default: `icingaweb2`): icingaweb2 db password
 
- * `default['icingaweb2']['ido']['apt']['action']` (default: `:add`): apt repository resource attribute
 
- * `default['icingaweb2']['ido']['apt']['repo']` (default: `MySQL Community #{node['icingaweb2']['ido']['mysql_version']}`): apt repository resource attribute
+## Mysql Repository attributes
 
- * `default['icingaweb2']['ido']['apt']['uri']` (default: `http://repo.mysql.com/apt/#{node['platform']}/`): apt repository resource attribute
+ * `default['icingaweb2']['mysql_repo']['yum']['description']` (default: `MySQL Community`): yum repo resource attribute
 
- * `default['icingaweb2']['ido']['apt']['distribution']` (default: `node['lsb']['codename']`): apt repository resource attribute
+ * `default['icingaweb2']['mysql_repo']['yum']['gpgcheck']` (default: `true`): yum repo resource attribute
 
- * `default['icingaweb2']['ido']['apt']['key']` (default: `5072E1F5`): apt repository resource attribute
+ * `default['icingaweb2']['mysql_repo']['yum']['enabled']` (default: `true`): yum repo resource attribute
+
+ * `default['icingaweb2']['mysql_repo']['yum']['gpgkey']` (default: `https://raw.githubusercontent.com/Icinga/chef-icinga2/master/files/default/mysql_pubkey.asc`): yum repo resource attribute
+
+ * `default['icingaweb2']['mysql_repo']['yum']['action']` (default: `:create`): yum repo resource attribute
+
+ * `default['icingaweb2']['mysql_repo']['yum']['baseurl']` (default: `calculated`): yum repo resource attribute
+
+ * `default['icingaweb2']['mysql_repo']['apt']['repo']` (default: `MySQL Community`): apt repository resource attribute
+
+ * `default['icingaweb2']['mysql_repo']['apt']['keyserver']` (default: `keyserver.ubuntu.com`): apt repository resource attribute
+
+ * `default['icingaweb2']['mysql_repo']['apt']['components']` (default: `calculated`): apt repository resource attribute
+
+ * `default['icingaweb2']['mysql_repo']['apt']['deb_src']` (default: `false`): apt repository resource attribute
+
+ * `default['icingaweb2']['mysql_repo']['apt']['action']` (default: `:add`): apt repository resource attribute
+
+ * `default['icingaweb2']['mysql_repo']['apt']['uri']` (default: `http://repo.mysql.com/apt/#{node['platform']}/`): apt repository resource attribute
+
+ * `default['icingaweb2']['mysql_repo']['apt']['distribution']` (default: `node['lsb']['codename']`): apt repository resource attribute
+
+ * `default['icingaweb2']['mysql_repo']['apt']['key']` (default: `5072E1F5`): apt repository resource attribute
 
 
 ## Contributing
@@ -215,3 +265,4 @@ limitations under the License.
 [Chef]: https://www.chef.io/
 [Icingaweb2]: https://www.icinga.com/
 [Contributors]: https://github.com/Icinga/chef-icingaweb2/graphs/contributors
+[Issues]: https://github.com/Icinga/chef-icingaweb2/issues

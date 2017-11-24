@@ -7,8 +7,7 @@
 %>
 driver:
   name: dokken
-  privileged: false
-  # privileged: true
+  privileged: true
 
 transport:
   name: dokken
@@ -22,6 +21,7 @@ provisioner:
     icinga2:
       ignore_version: true
     icingaweb2:
+      setup_config: false
       ignore_version: true
       <% if db_setup_auto == 'true' %>
       install_mysql_client: false

@@ -27,7 +27,7 @@ else
 end
 
 include_recipe 'icingaweb2::install'
-include_recipe 'icingaweb2::config'
+include_recipe 'icingaweb2::config' if node['icingaweb2']['setup_config']
 include_recipe 'icingaweb2::ido'
 
 # temp

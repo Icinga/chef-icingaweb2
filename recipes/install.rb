@@ -62,18 +62,36 @@ else
   package 'icingaweb2' do
     # skip ubuntu version for now
     version web2_package_version unless node['icingaweb2']['ignore_version']
-    notifies :restart, 'service[icinga2]', :delayed
+    notifies :restart, 'service[apache2]', :delayed
   end
 
   package 'icingacli' do
     version cli_package_version unless node['icingaweb2']['ignore_version']
-    notifies :restart, 'service[icinga2]', :delayed
+    notifies :restart, 'service[apache2]', :delayed
+  end
+
+  if node['platform'] == 'debian'
+    package 'icingaweb2-module-monitoring' do
+      version web2_package_version unless node['icingaweb2']['ignore_version']
+      notifies :restart, 'service[apache2]', :delayed
+    end
+
+    package 'icingaweb2-module-doc' do
+      version web2_package_version unless node['icingaweb2']['ignore_version']
+      notifies :restart, 'service[apache2]', :delayed
+    end
   end
 end
 
 icinga2_feature 'command'
 
 directory node['icingaweb2']['conf_dir'] do
+  owner node[node['icingaweb2']['web_engine']]['user']
+  group node[node['icingaweb2']['web_engine']]['group']
+  mode '02770'
+end
+
+directory ::File.join(node['icingaweb2']['conf_dir'], 'enabledModules') do
   owner node[node['icingaweb2']['web_engine']]['user']
   group node[node['icingaweb2']['web_engine']]['group']
   mode '02770'
@@ -92,14 +110,16 @@ directory node['icingaweb2']['log_dir'] do
 end
 
 # setup token
-unless node['icingaweb2'].key?('setup_token')
-  require 'securerandom'
-  node.normal['icingaweb2']['setup_token'] = SecureRandom.base64(12)
-end
+unless node['icingaweb2']['setup_config']
+  unless node['icingaweb2'].key?('setup_token')
+    require 'securerandom'
+    node.normal['icingaweb2']['setup_token'] = SecureRandom.base64(12)
+  end
 
-file ::File.join(node['icingaweb2']['conf_dir'], 'setup.token') do
-  content node['icingaweb2']['setup_token']
-  owner node[node['icingaweb2']['web_engine']]['user']
-  group node[node['icingaweb2']['web_engine']]['group']
-  mode 0o660
+  file ::File.join(node['icingaweb2']['conf_dir'], 'setup.token') do
+    content node['icingaweb2']['setup_token']
+    owner node[node['icingaweb2']['web_engine']]['user']
+    group node[node['icingaweb2']['web_engine']]['group']
+    mode 0o660
+  end
 end
