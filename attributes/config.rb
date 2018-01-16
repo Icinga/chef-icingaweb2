@@ -20,7 +20,6 @@ default['icingaweb2']['ini_config']['resources'].tap do |resources|
   resources['icinga_ido']['charset'] = ''
   resources['icinga_ido']['persistent'] = '0'
   resources['icinga_ido']['use_ssl'] = '0'
-
 end
 
 # #
@@ -32,14 +31,13 @@ default['icingaweb2']['ini_config']['config'].tap do |config|
   config['logging']['log'] = 'syslog'
   config['logging']['level'] = 'ERROR'
   config['logging']['application'] = 'icingaweb2'
-
-#  config['preferences']['type'] = 'db'
-#  config['preferences']['resource'] = 'icingaweb_db'
+  #  config['preferences']['type'] = 'db'
+  #  config['preferences']['resource'] = 'icingaweb_db'
 end
 
 default['icingaweb2']['ini_config']['authentication'].tap do |authentication|
   authentication['icingaweb2']['backend'] = 'db'
-#  authentication['icingaweb2']['resource'] = 'icingaweb_db'
+  #  authentication['icingaweb2']['resource'] = 'icingaweb_db'
 end
 
 # default['icingaweb2']['ini_config']['groups'].tap do |grp|
@@ -65,9 +63,9 @@ end
 default['icingaweb2']['ini_config']['modules_monitoring_commandtransports'].tap do |mmctr|
   mmctr['icinga2']['transport'] = 'local'
   mmctr['icinga2']['path'] = '/var/run/icinga2/cmd/icinga2.cmd'
-#  mmctr['icinga2']['transport'] = 'api'
-#  mmctr['icinga2']['host'] = 'localhost'
-#  mmctr['icinga2']['port'] = '5665'
-#  mmctr['icinga2']['username'] = 'api'
-#  mmctr['icinga2']['password'] = 'api'
+  #  mmctr['icinga2']['transport'] = 'api'
+  #  mmctr['icinga2']['host'] = 'localhost'
+  #  mmctr['icinga2']['port'] = '5665'
+  #  mmctr['icinga2']['username'] = 'api'
+  #  mmctr['icinga2']['password'] = 'api'
 end
