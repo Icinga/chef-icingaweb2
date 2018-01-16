@@ -21,7 +21,7 @@ when 'debian'
 
   when 'xenial'
     os_packages = %w[apt-utils g++ mailutils libapache2-mod-php7.0 php7.0 php7.0-cli php7.0-fpm build-essential
-                     libgd2-xpm-dev libjpeg62 libpng12-0
+                     libgd-dev libjpeg62 libpng12-0
                      libpng12-dev imagemagick
                      php7.0-imagick php-pear php7.0-xmlrpc php7.0-xsl php7.0-mysql
                      php-soap php7.0-gd php7.0-ldap php7.0-pgsql php7.0-intl php7.0-curl]
