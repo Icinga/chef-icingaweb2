@@ -8,6 +8,11 @@
 include_recipe 'icingaweb2::attributes'
 include_recipe 'icinga2repo::default'
 
+# Setting up software Centos collectors repository 
+if %w[centos].include?(node['platform']) && node['icingaweb2']['setup_scl']
+  include_recipe 'yum-scl'
+end
+
 if %w[redhat centos].include?(node['platform']) && node['icingaweb2']['setup_epel']
   include_recipe 'yum-epel'
 elsif node['platform'] == 'amazon'

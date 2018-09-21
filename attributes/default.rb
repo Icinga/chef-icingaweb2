@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 default['icingaweb2']['setup_epel'] = true
+default['icingaweb2']['setup_scl'] = true
 default['icingaweb2']['setup_config'] = false
 default['icingaweb2']['ignore_version'] = false
 default['icingaweb2']['install_method'] = 'package' # options: package, source

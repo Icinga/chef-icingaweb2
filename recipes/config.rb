@@ -41,6 +41,16 @@ template ::File.join(node['icingaweb2']['conf_dir'], 'roles.ini') do
   mode 0o660
 end
 
+template ::File.join(node['icingaweb2']['conf_dir'], 'groups.ini') do
+  source 'ini.erb'
+  owner node['apache']['user']
+  group node['apache']['group']
+  notifies platform?('windows') ? :restart : :reload, 'service[apache2]', :delayed
+  variables(:config => node['icingaweb2']['ini_config']['groups'])
+  mode 0o660
+end
+
+
 template ::File.join(node['icingaweb2']['conf_dir'], 'modules', 'monitoring', 'config.ini') do
   source 'ini.erb'
   owner node['apache']['user']

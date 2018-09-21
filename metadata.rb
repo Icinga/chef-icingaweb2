@@ -4,7 +4,7 @@ maintainer_email 'vir.khatri@gmail.com'
 license 'Apache-2.0'
 description 'Installs/Configures IcingaWeb2'
 long_description 'Installs/Configures IcingaWeb2'
-version '1.0.0'
+version '1.0.1'
 chef_version '>= 12.1' if respond_to?(:chef_version)
 
 issues_url 'https://github.com/Icinga/chef-icingaweb2/issues' if respond_to?(:issues_url)
@@ -12,6 +12,7 @@ source_url 'https://github.com/Icinga/chef-icingaweb2' if respond_to?(:source_ur
 
 depends 'apache2', '~> 3.3.0'
 depends 'yum-epel', '>= 2.1.1'
+depends 'yum-scl', '>= 0.2.0'
 depends 'apt', '>= 5.0.1'
 depends 'icinga2repo', '>= 1.0.0'
 depends 'icinga2', '>= 4.0.0'
