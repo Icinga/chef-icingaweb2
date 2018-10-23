@@ -8,6 +8,8 @@
 %>
 driver:
   name: vagrant
+  customize:
+    audio: none
 
 verifier:
   name: inspec

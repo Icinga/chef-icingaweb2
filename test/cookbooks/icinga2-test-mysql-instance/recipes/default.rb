@@ -51,3 +51,17 @@ mysql_database_user 'icinga' do
   privileges [:all]
   action %i[create grant]
 end
+
+
+mysql_database 'icingaweb2' do
+  connection mysql_connection_info
+  action :create
+end
+
+mysql_database_user 'icingaweb2' do
+  connection mysql_connection_info
+  password 'X2BM0WKnN' 
+  database_name 'icingaweb2'
+  privileges [:all]
+  action %i[create grant]
+end
